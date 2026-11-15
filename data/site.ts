@@ -5,7 +5,7 @@ export const site = {
   tagline: "Car Rental & Quality Used Cars for Sale",
   description:
     "YM Cars Ltd: flexible daily, weekly and monthly car rental plus quality used cars for sale. Book online or WhatsApp us for a fast quote.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.ymcars.co.uk",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.ymcarsltd.co.uk",
 
   phoneDisplay: "0121 798 4562",
   phoneHref: "tel:+441217984562",

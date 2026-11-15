@@ -8,7 +8,7 @@ const links = [
   { href: "/about", label: "About Us" },
   { href: "/#booking", label: "Book Now" },
   { href: "/#reviews", label: "Reviews" },
-  { href: "/#contact", label: "Contact" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export default function Footer() {

@@ -13,7 +13,7 @@ const nav = [
   { href: "/#for-sale", label: "Cars for Sale" },
   { href: "/about", label: "About Us" },
   { href: "/#reviews", label: "Reviews" },
-  { href: "/#contact", label: "Contact" },
+  { href: "/contact", label: "Contact" },
 ];
 
 export default function Header() {

@@ -27,15 +27,18 @@ export const site = {
   // Text used to find the listing in the Google Places API when GOOGLE_PLACE_ID is not set.
   googlePlaceSearch: "YM CARS LTD",
 
-  hours: [
-    { days: "Monday – Friday", time: "09:00 – 18:00" },
-    { days: "Saturday", time: "09:00 – 17:00" },
-    { days: "Sunday", time: "By appointment" },
-  ],
+  // Phone lines are open 9am–6pm, 7 days. Outside these hours customers can WhatsApp or email.
+  hours: [{ days: "Monday – Sunday", time: "09:00 – 18:00" }],
+
+  // TODO: add the client's email address. Email links appear automatically once this is set.
+  email: "" as string,
 
   // Google Business Profile link ("Read all reviews" / "Write a review").
   googleReviewsUrl: "https://maps.google.com/?cid=17588525967065018344",
 };
+
+export const hoursNote = () =>
+  `Calls 9am–6pm, 7 days a week. Outside these hours, WhatsApp ${site.email ? "or email " : ""}us anytime.`;
 
 export const whatsappLink = (text?: string) =>
   `https://wa.me/${site.whatsappNumber}${text ? `?text=${encodeURIComponent(text)}` : ""}`;

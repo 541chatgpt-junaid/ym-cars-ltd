@@ -8,12 +8,13 @@ import EnquireButton from "@/components/EnquireButton";
 import CarArt from "@/components/CarArt";
 import {
   ArrowIcon, CalendarIcon, CheckIcon, ClockIcon, FuelIcon, GaugeIcon, GearIcon,
-  KeyIcon, PhoneIcon, PinIcon, SeatIcon, ShieldIcon, SwapIcon, TagIcon, WhatsAppIcon,
+  KeyIcon, MailIcon, PhoneIcon, PinIcon, SeatIcon, ShieldIcon, SwapIcon, TagIcon, WhatsAppIcon,
 } from "@/components/Icons";
 import { gbp, rentalFleet } from "@/data/cars";
 import { carImage, stock } from "@/data/stock";
 import StockSection from "@/components/StockSection";
-import { site, whatsappLink } from "@/data/site";
+import HeroSlider from "@/components/HeroSlider";
+import { hoursNote, site, whatsappLink } from "@/data/site";
 
 const faqs = [
   {
@@ -50,6 +51,7 @@ const jsonLd = {
       image: `${site.url}/og-image.jpg`,
       description: site.description,
       telephone: "+44 121 798 4562",
+      email: site.email || undefined,
       address: {
         "@type": "PostalAddress",
         streetAddress: site.address.street || undefined,
@@ -58,8 +60,7 @@ const jsonLd = {
         addressCountry: site.address.country,
       },
       openingHoursSpecification: [
-        { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "09:00", closes: "18:00" },
-        { "@type": "OpeningHoursSpecification", dayOfWeek: "Saturday", opens: "09:00", closes: "17:00" },
+        { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], opens: "09:00", closes: "18:00" },
       ],
       contactPoint: [
         { "@type": "ContactPoint", telephone: "+44 121 798 4562", contactType: "customer service", areaServed: "GB" },
@@ -118,7 +119,7 @@ export default function Home() {
           </div>
 
           <div className="container hero__inner">
-            <div className="hero__copy">
+            <div className="hero__copy hero__copy--top">
               <span className="pill" data-reveal="up">
                 <span className="pill__dot" /> Car Rental · Cars for Sale · Part Exchange
               </span>
@@ -131,6 +132,9 @@ export default function Home() {
                 Flexible daily, weekly and monthly car rental plus hand-picked quality used cars for sale in{" "}
                 {site.address.city}. Book in minutes on WhatsApp.
               </p>
+            </div>
+
+            <div className="hero__copy hero__copy--bottom">
               <div className="hero__actions" data-reveal="up" style={{ ["--d" as string]: "220ms" }}>
                 <a href="#booking" className="btn btn--gradient btn--lg">
                   <CalendarIcon size={20} /> Book a Car
@@ -142,23 +146,15 @@ export default function Home() {
               <HeroSearch />
             </div>
 
-            <div className="hero__visual" aria-hidden>
-              <div className="hero__ring" />
+            <div className="hero__visual">
+              <div className="hero__ring" aria-hidden />
               <div className="hero__photo">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/hero-car.webp"
-                  alt="Red Toyota Land Cruiser Prado in the YM Cars showroom"
-                  width={1280}
-                  height={960}
-                  fetchPriority="high"
-                  decoding="async"
-                />
+                <HeroSlider />
               </div>
-              <div className="float-card float-card--1">
+              <div className="float-card float-card--1" aria-hidden>
                 <KeyIcon size={18} /> <div><strong>Rentals</strong><span>Daily · Weekly · Monthly</span></div>
               </div>
-              <div className="float-card float-card--2">
+              <div className="float-card float-card--2" aria-hidden>
                 <ShieldIcon size={18} /> <div><strong>Checked</strong><span>Inspected used cars</span></div>
               </div>
             </div>
@@ -319,7 +315,7 @@ export default function Home() {
               <span className="eyebrow">Book Online</span>
               <h2 id="booking-title">Book your car or send an enquiry</h2>
               <p>
-                Fill in the form and your request is sent straight to our team on WhatsApp. Usually we reply within minutes during opening hours.
+                Fill in the form and your request is sent straight to our team on WhatsApp. Calls are answered 9am–6pm, 7 days a week. WhatsApp messages are welcome anytime.
               </p>
               <ul className="checklist checklist--lg">
                 <li><CheckIcon size={18} /> No booking fees</li>
@@ -380,8 +376,14 @@ export default function Home() {
                 </li>
                 <li>
                   <WhatsAppIcon size={20} />
-                  <div><strong>WhatsApp</strong><a href={whatsappLink()} target="_blank" rel="noopener">{site.whatsappDisplay}</a></div>
+                  <div><strong>WhatsApp</strong><a href={whatsappLink()} target="_blank" rel="noopener">{site.whatsappDisplay}</a><span className="small muted">Available 24/7</span></div>
                 </li>
+                {site.email && (
+                  <li>
+                    <MailIcon size={20} />
+                    <div><strong>Email</strong><a href={`mailto:${site.email}`}>{site.email}</a></div>
+                  </li>
+                )}
                 <li>
                   <ClockIcon size={20} />
                   <div>
@@ -389,6 +391,7 @@ export default function Home() {
                     {site.hours.map((h) => (
                       <span key={h.days} className="hours-row"><span>{h.days}</span><span>{h.time}</span></span>
                     ))}
+                    <span className="hours-note">{hoursNote()}</span>
                   </div>
                 </li>
               </ul>
@@ -437,6 +440,7 @@ export default function Home() {
             <ul>
               <li><a href={site.phoneHref}><PhoneIcon size={15} /> {site.phoneDisplay}</a></li>
               <li><a href={whatsappLink()} target="_blank" rel="noopener"><WhatsAppIcon size={15} /> {site.whatsappDisplay}</a></li>
+              {site.email && <li><a href={`mailto:${site.email}`}><MailIcon size={15} /> {site.email}</a></li>}
               <li><span><PinIcon size={15} /> {site.address.city}, UK</span></li>
             </ul>
           </div>
@@ -446,6 +450,7 @@ export default function Home() {
               {site.hours.map((h) => (
                 <li key={h.days} className="hours-row"><span>{h.days}</span><span>{h.time}</span></li>
               ))}
+              <li className="hours-note">{hoursNote()}</li>
             </ul>
           </div>
         </div>

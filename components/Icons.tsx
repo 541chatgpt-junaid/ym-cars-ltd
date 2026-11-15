@@ -137,3 +137,10 @@ export const CloseIcon = ({ size, className }: P) => (
     <path d="M18 6 6 18M6 6l12 12" />
   </svg>
 );
+
+export const MailIcon = ({ size, className }: P) => (
+  <svg {...base(size)} className={className}>
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+    <path d="m22 7-10 6L2 7" />
+  </svg>
+);

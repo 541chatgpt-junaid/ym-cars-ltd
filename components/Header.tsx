@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { site, whatsappLink } from "@/data/site";
+import { hoursNote, site, whatsappLink } from "@/data/site";
 import { CloseIcon, MenuIcon, PhoneIcon, WhatsAppIcon } from "./Icons";
 
 const nav = [
@@ -59,8 +59,10 @@ export default function Header() {
             </button>
           </div>
         </div>
+      </header>
 
-        <div id="mobile-menu" className={`mobile-menu ${open ? "mobile-menu--open" : ""}`}>
+      {/* Rendered outside <header>: the header's backdrop-filter would otherwise trap this fixed panel. */}
+      <div id="mobile-menu" className={`mobile-menu ${open ? "mobile-menu--open" : ""}`} aria-hidden={!open}>
           <nav aria-label="Mobile">
             {nav.map((n, i) => (
               <a key={n.href} href={n.href} onClick={() => setOpen(false)} style={{ transitionDelay: `${i * 50}ms` }}>
@@ -75,9 +77,9 @@ export default function Header() {
             <a href={whatsappLink()} className="btn btn--green" target="_blank" rel="noopener">
               <WhatsAppIcon size={18} /> WhatsApp Us
             </a>
+            <p className="mobile-menu__hours">{hoursNote()}</p>
           </div>
-        </div>
-      </header>
+      </div>
     </>
   );
 }

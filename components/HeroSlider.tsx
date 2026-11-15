@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { carImage, stock } from "@/data/stock";
 import { gbp } from "@/data/cars";
 
-const INTERVAL = 3500;
+const INTERVAL = 5000; // each car stays on screen for 5 seconds
 
 // Auto-rotating showcase of every car currently in stock (data/stock.ts).
 // Adding or removing a car there updates the slider automatically.
@@ -64,7 +64,15 @@ export default function HeroSlider() {
     >
       {prev !== null && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img key={`p${prev}`} className="hero-slider__img is-prev" src={carImage(cars[prev])} alt="" width={1200} height={900} />
+        <img
+          key={`p${prev}`}
+          className="hero-slider__img is-prev"
+          src={carImage(cars[prev])}
+          alt=""
+          width={1200}
+          height={900}
+          onAnimationEnd={(e) => e.animationName === "heroFadeOut" && setPrev(null)}
+        />
       )}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -75,7 +83,6 @@ export default function HeroSlider() {
         width={1200}
         height={900}
         fetchPriority={idx === 0 ? "high" : "auto"}
-        onAnimationEnd={() => setPrev(null)}
       />
 
       <a href="#for-sale" className="hero-slider__caption" aria-live="polite">

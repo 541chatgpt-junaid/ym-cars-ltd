@@ -1,5 +1,6 @@
 import { site } from "@/data/site";
 import { GoogleIcon, StarIcon } from "./Icons";
+import { googleRating, googleReviewCount, manualReviews } from "@/data/reviews";
 
 type Review = { author: string; rating: number; text: string; when: string; photo?: string };
 type ReviewData = { rating: number; total: number; reviews: Review[]; url: string };
@@ -67,8 +68,14 @@ const Stars = ({ n, size = 16 }: { n: number; size?: number }) => (
 );
 
 export default async function GoogleReviews() {
-  const data = await getReviews();
-  const url = data?.url || site.googleReviewsUrl;
+  // Live API data when a key is set; otherwise the reviews copied into data/reviews.ts.
+  const data: ReviewData = (await getReviews()) ?? {
+    rating: googleRating,
+    total: googleReviewCount || manualReviews.length,
+    url: site.googleReviewsUrl,
+    reviews: manualReviews,
+  };
+  const url = data.url || site.googleReviewsUrl;
 
   return (
     <section id="reviews" className="section section--alt" aria-labelledby="reviews-title">
@@ -81,12 +88,14 @@ export default async function GoogleReviews() {
         <div className="reviews__summary" data-reveal="up">
           <GoogleIcon size={36} />
           <div>
-            {data && data.total > 0 ? (
+            {data.rating > 0 ? (
               <>
                 <div className="reviews__score">
-                  <strong>{data.rating.toFixed(1)}</strong> <Stars n={data.rating} />
+                  <strong>{data.rating.toFixed(1)}</strong> <Stars n={data.rating} size={20} />
                 </div>
-                <span className="muted">Based on {data.total} Google reviews</span>
+                <span className="muted">
+                  {data.total > 0 ? `Based on ${data.total} Google review${data.total === 1 ? "" : "s"}` : "Our rating on Google"}
+                </span>
               </>
             ) : (
               <>
@@ -106,9 +115,9 @@ export default async function GoogleReviews() {
           </div>
         </div>
 
-        {data && data.reviews.length > 0 && (
+        {data.reviews.length > 0 && (
           <div className="reviews__grid">
-            {data.reviews.slice(0, 6).map((r, i) => (
+            {data.reviews.slice(0, 9).map((r, i) => (
               <figure key={i} className="review-card" data-reveal="up" style={{ ["--d" as string]: `${(i % 3) * 100}ms` }}>
                 <div className="review-card__head">
                   {r.photo ? (
@@ -127,6 +136,7 @@ export default async function GoogleReviews() {
                 </div>
                 <Stars n={r.rating} />
                 <blockquote>{r.text.length > 320 ? `${r.text.slice(0, 317)}…` : r.text}</blockquote>
+                <a href={url} target="_blank" rel="noopener" className="review-card__source">Posted on Google</a>
               </figure>
             ))}
           </div>

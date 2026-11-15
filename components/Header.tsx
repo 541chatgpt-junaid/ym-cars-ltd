@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { site, whatsappLink } from "@/data/site";
-import { CloseIcon, MenuIcon, PhoneIcon, WhatsAppIcon, ClockIcon } from "./Icons";
+import { CloseIcon, MenuIcon, PhoneIcon, WhatsAppIcon } from "./Icons";
 
 const nav = [
   { href: "#rentals", label: "Car Rental" },
@@ -30,22 +30,6 @@ export default function Header() {
 
   return (
     <>
-      <div className="topbar">
-        <div className="container topbar__inner">
-          <span className="topbar__item">
-            <ClockIcon size={15} /> Mon–Sat 9am–6pm · Sun by appointment
-          </span>
-          <div className="topbar__links">
-            <a href={site.phoneHref}>
-              <PhoneIcon size={15} /> {site.phoneDisplay}
-            </a>
-            <a href={whatsappLink()} target="_blank" rel="noopener">
-              <WhatsAppIcon size={15} /> {site.whatsappDisplay}
-            </a>
-          </div>
-        </div>
-      </div>
-
       <header className={`header ${scrolled ? "header--scrolled" : ""}`}>
         <div className="container header__inner">
           <a href="#top" className="header__logo" aria-label={`${site.name} home`}>

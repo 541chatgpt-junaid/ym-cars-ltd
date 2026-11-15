@@ -144,8 +144,17 @@ export default function Home() {
 
             <div className="hero__visual" aria-hidden>
               <div className="hero__ring" />
-              <CarArt shape="saloon" color="blue" className="hero__car hero__car--back" />
-              <CarArt shape="suv" color="green" className="hero__car hero__car--front" />
+              <div className="hero__photo">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/hero-car.webp"
+                  alt="Red Toyota Land Cruiser Prado in the YM Cars showroom"
+                  width={1280}
+                  height={960}
+                  fetchPriority="high"
+                  decoding="async"
+                />
+              </div>
               <div className="float-card float-card--1">
                 <KeyIcon size={18} /> <div><strong>Rentals</strong><span>Daily · Weekly · Monthly</span></div>
               </div>
@@ -190,6 +199,10 @@ export default function Home() {
             </div>
             <div className="services">
               <article className="service-card service-card--blue" data-reveal="left">
+                <div className="service-card__media">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/images/service-rental.webp" alt="Blue Toyota Prius available for rental" width={900} height={675} loading="lazy" decoding="async" />
+                </div>
                 <span className="service-card__icon"><KeyIcon size={30} /></span>
                 <h3>Car Rental</h3>
                 <p>Clean, reliable cars for every need: daily hire, weekly rental, long-term monthly deals and replacement vehicles.</p>
@@ -199,9 +212,12 @@ export default function Home() {
                   <li><CheckIcon size={16} /> Simple booking, quick handover</li>
                 </ul>
                 <a href="#rentals" className="link-arrow">View rental fleet <ArrowIcon size={16} /></a>
-                <CarArt shape="hatch" color="blue" className="service-card__car" />
               </article>
               <article className="service-card service-card--green" data-reveal="right">
+                <div className="service-card__media">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/images/service-sales.webp" alt="White Toyota Land Cruiser for sale" width={900} height={675} loading="lazy" decoding="async" />
+                </div>
                 <span className="service-card__icon"><TagIcon size={30} /></span>
                 <h3>Cars for Sale</h3>
                 <p>Quality used cars at honest prices. Every car is inspected and history checked, and part exchange is welcome.</p>
@@ -211,7 +227,6 @@ export default function Home() {
                   <li><CheckIcon size={16} /> Viewings &amp; test drives</li>
                 </ul>
                 <a href="#for-sale" className="link-arrow">Browse cars for sale <ArrowIcon size={16} /></a>
-                <CarArt shape="suv" color="green" className="service-card__car" />
               </article>
             </div>
           </div>

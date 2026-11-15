@@ -3,6 +3,7 @@ import HeroSearch from "@/components/HeroSearch";
 import BookingForm from "@/components/BookingForm";
 import GoogleReviews from "@/components/GoogleReviews";
 import FloatingButtons from "@/components/FloatingButtons";
+import Footer from "@/components/Footer";
 import RevealObserver from "@/components/RevealObserver";
 import EnquireButton from "@/components/EnquireButton";
 import CarArt from "@/components/CarArt";
@@ -417,52 +418,7 @@ export default function Home() {
         </section>
       </main>
 
-      {/* ---------- FOOTER ---------- */}
-      <footer className="footer">
-        <div className="container footer__grid">
-          <div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt={`${site.name} logo`} width={220} height={47} className="footer__logo" loading="lazy" />
-            <p className="muted">{site.tagline}. Friendly local service, honest prices and fast WhatsApp booking.</p>
-          </div>
-          <div>
-            <h3>Quick links</h3>
-            <ul>
-              <li><a href="#rentals">Car Rental</a></li>
-              <li><a href="#for-sale">Cars for Sale</a></li>
-              <li><a href="#booking">Book Now</a></li>
-              <li><a href="#reviews">Reviews</a></li>
-              <li><a href="#contact">Contact</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3>Contact</h3>
-            <ul>
-              <li><a href={site.phoneHref}><PhoneIcon size={15} /> {site.phoneDisplay}</a></li>
-              <li><a href={whatsappLink()} target="_blank" rel="noopener"><WhatsAppIcon size={15} /> {site.whatsappDisplay}</a></li>
-              {site.email && <li><a href={`mailto:${site.email}`}><MailIcon size={15} /> {site.email}</a></li>}
-              <li><span><PinIcon size={15} /> {site.address.city}, UK</span></li>
-            </ul>
-          </div>
-          <div>
-            <h3>Opening hours</h3>
-            <ul>
-              {site.hours.map((h) => (
-                <li key={h.days} className="hours-row"><span>{h.days}</span><span>{h.time}</span></li>
-              ))}
-              <li className="hours-note">{hoursNote()}</li>
-            </ul>
-          </div>
-        </div>
-        <div className="container footer__bottom">
-          <span>© {new Date().getFullYear()} {site.name}. All rights reserved. Registered in England &amp; Wales.</span>
-          <span className="footer__legal">
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms &amp; Conditions</a>
-            <a href="#">Cookies</a>
-          </span>
-        </div>
-      </footer>
+      <Footer />
 
       <FloatingButtons />
     </>

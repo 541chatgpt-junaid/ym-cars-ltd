@@ -1,20 +1,24 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { hoursNote, site, whatsappLink } from "@/data/site";
 import { CloseIcon, MenuIcon, PhoneIcon, WhatsAppIcon } from "./Icons";
 
+// Links start with "/" so they work from every page, not just the homepage.
 const nav = [
-  { href: "#rentals", label: "Car Rental" },
-  { href: "#for-sale", label: "Cars for Sale" },
-  { href: "#booking", label: "Book Now" },
-  { href: "#reviews", label: "Reviews" },
-  { href: "#contact", label: "Contact" },
+  { href: "/#rentals", label: "Car Rental" },
+  { href: "/#for-sale", label: "Cars for Sale" },
+  { href: "/about", label: "About Us" },
+  { href: "/#reviews", label: "Reviews" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -32,15 +36,20 @@ export default function Header() {
     <>
       <header className={`header ${scrolled ? "header--scrolled" : ""}`}>
         <div className="container header__inner">
-          <a href="#top" className="header__logo" aria-label={`${site.name} home`}>
+          <Link href="/" className="header__logo" aria-label={`${site.name} home`}>
             <Image src="/logo.png" alt={`${site.name} logo`} width={560} height={120} priority />
-          </a>
+          </Link>
 
           <nav className="nav" aria-label="Main">
             {nav.map((n) => (
-              <a key={n.href} href={n.href} className="nav__link">
+              <Link
+                key={n.href}
+                href={n.href}
+                className={`nav__link ${pathname === n.href ? "is-active" : ""}`}
+                aria-current={pathname === n.href ? "page" : undefined}
+              >
                 {n.label}
-              </a>
+              </Link>
             ))}
           </nav>
 
@@ -65,9 +74,9 @@ export default function Header() {
       <div id="mobile-menu" className={`mobile-menu ${open ? "mobile-menu--open" : ""}`} aria-hidden={!open}>
           <nav aria-label="Mobile">
             {nav.map((n, i) => (
-              <a key={n.href} href={n.href} onClick={() => setOpen(false)} style={{ transitionDelay: `${i * 50}ms` }}>
+              <Link key={n.href} href={n.href} onClick={() => setOpen(false)} style={{ transitionDelay: `${i * 50}ms` }}>
                 {n.label}
-              </a>
+              </Link>
             ))}
           </nav>
           <div className="mobile-menu__cta">

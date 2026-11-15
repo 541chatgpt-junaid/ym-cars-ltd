@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { rentalFleet, carsForSale } from "@/data/cars";
+import { rentalFleet } from "@/data/cars";
+import { stock } from "@/data/stock";
 import { site, whatsappLink } from "@/data/site";
 import { CheckIcon, PhoneIcon, WhatsAppIcon } from "./Icons";
 
@@ -190,9 +191,9 @@ export default function BookingForm() {
               <span>Car you&apos;re interested in</span>
               <select value={values.vehicle} onChange={set("vehicle")}>
                 <option value="">Not sure yet / help me choose</option>
-                {carsForSale.map((c) => (
-                  <option key={c.id} value={`${c.year} ${c.make} ${c.model}`}>
-                    {c.year} {c.make} {c.model} {c.variant}
+                {stock.map((c) => (
+                  <option key={c.id} value={`${c.year} ${c.make} ${c.model} ${c.variant} (${c.id})`}>
+                    {c.year} {c.make} {c.model} {c.variant}: £{c.price.toLocaleString("en-GB")}
                   </option>
                 ))}
               </select>

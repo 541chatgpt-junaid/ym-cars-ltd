@@ -10,7 +10,9 @@ import {
   ArrowIcon, CalendarIcon, CheckIcon, ClockIcon, FuelIcon, GaugeIcon, GearIcon,
   KeyIcon, PhoneIcon, PinIcon, SeatIcon, ShieldIcon, SwapIcon, TagIcon, WhatsAppIcon,
 } from "@/components/Icons";
-import { carsForSale, gbp, rentalFleet } from "@/data/cars";
+import { gbp, rentalFleet } from "@/data/cars";
+import { carImage, stock } from "@/data/stock";
+import StockSection from "@/components/StockSection";
 import { site, whatsappLink } from "@/data/site";
 
 const faqs = [
@@ -63,6 +65,29 @@ const jsonLd = {
         { "@type": "ContactPoint", telephone: "+44 121 798 4562", contactType: "customer service", areaServed: "GB" },
         { "@type": "ContactPoint", telephone: "+44 7383 393739", contactType: "sales", contactOption: "WhatsApp" },
       ],
+    },
+    {
+      "@type": "ItemList",
+      name: "Used Toyota cars for sale",
+      itemListElement: stock.map((c, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        item: {
+          "@type": "Car",
+          name: `${c.year} ${c.make} ${c.model} ${c.variant}`,
+          brand: { "@type": "Brand", name: c.make },
+          model: c.model,
+          vehicleModelDate: String(c.year),
+          bodyType: c.body || undefined,
+          color: c.colour || undefined,
+          fuelType: c.fuel,
+          vehicleTransmission: c.gearbox,
+          mileageFromOdometer: { "@type": "QuantitativeValue", value: c.mileage, unitCode: "SMI" },
+          itemCondition: "https://schema.org/UsedCondition",
+          image: `${site.url}${carImage(c)}`,
+          offers: { "@type": "Offer", price: c.price, priceCurrency: "GBP", availability: "https://schema.org/InStock", seller: { "@id": `${site.url}/#business` } },
+        },
+      })),
     },
     {
       "@type": "FAQPage",
@@ -238,38 +263,14 @@ export default function Home() {
             <div className="section-head section-head--row" data-reveal="up">
               <div>
                 <span className="eyebrow">Cars for Sale</span>
-                <h2 id="sale-title">Latest used cars</h2>
+                <h2 id="sale-title">Quality used Toyota cars</h2>
+                <p className="muted section-sub">{stock.length} cars in stock: Prius, Corolla, C-HR, Land Cruiser and more.</p>
               </div>
               <a href={whatsappLink("Hi YM Cars, can you send me your full stock list?")} target="_blank" rel="noopener" className="btn btn--ghost btn--sm">
-                Ask for full stock <ArrowIcon size={16} />
+                <WhatsAppIcon size={16} /> Ask about a car
               </a>
             </div>
-            <div className="cards">
-              {carsForSale.map((c, i) => (
-                <article key={c.id} className="car-card" data-reveal="up" style={{ ["--d" as string]: `${i * 90}ms` }}>
-                  <div className="car-card__media car-card__media--green">
-                    {c.badge && <span className="badge badge--green">{c.badge}</span>}
-                    <CarArt shape={c.shape} color="green" className="car-card__art" />
-                  </div>
-                  <div className="car-card__body">
-                    <h3>{c.make} {c.model}</h3>
-                    <p className="muted small">{c.variant}</p>
-                    <ul className="specs specs--grid">
-                      <li><CalendarIcon size={15} /> {c.year}</li>
-                      <li><GaugeIcon size={15} /> {c.mileage.toLocaleString("en-GB")} mi</li>
-                      <li><FuelIcon size={15} /> {c.fuel}</li>
-                      <li><GearIcon size={15} /> {c.gearbox}</li>
-                    </ul>
-                    <div className="car-card__foot">
-                      <div className="price"><strong className="price--green">{gbp(c.price)}</strong></div>
-                      <EnquireButton detail={{ service: "buy", vehicle: `${c.year} ${c.make} ${c.model}` }} className="btn btn--green btn--sm">
-                        Enquire
-                      </EnquireButton>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
+            <StockSection />
           </div>
         </section>
 

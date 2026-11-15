@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { rentalFleet, carsForSale } from "@/data/cars";
+import { rentalFleet } from "@/data/cars";
+import { stock } from "@/data/stock";
 import type { PrefillDetail } from "./BookingForm";
 import { ArrowIcon, KeyIcon, TagIcon } from "./Icons";
 
@@ -71,9 +72,9 @@ export default function HeroSearch() {
             <span>Choose a car</span>
             <select value={vehicle} onChange={(e) => setVehicle(e.target.value)}>
               <option value="">Browse all cars for sale</option>
-              {carsForSale.map((c) => (
-                <option key={c.id} value={`${c.year} ${c.make} ${c.model}`}>
-                  {c.year} {c.make} {c.model}
+              {stock.map((c) => (
+                <option key={c.id} value={`${c.year} ${c.make} ${c.model} ${c.variant} (${c.id})`}>
+                  {c.year} {c.make} {c.model} {c.variant}
                 </option>
               ))}
             </select>

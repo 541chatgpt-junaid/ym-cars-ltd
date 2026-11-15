@@ -117,7 +117,7 @@ export default async function GoogleReviews() {
 
         {data.reviews.length > 0 && (
           <div className="reviews__grid">
-            {data.reviews.slice(0, 9).map((r, i) => (
+            {data.reviews.slice(0, 12).map((r, i) => (
               <figure key={i} className="review-card" data-reveal="up" style={{ ["--d" as string]: `${(i % 3) * 100}ms` }}>
                 <div className="review-card__head">
                   {r.photo ? (
@@ -136,7 +136,7 @@ export default async function GoogleReviews() {
                 </div>
                 <Stars n={r.rating} />
                 <blockquote>{r.text.length > 320 ? `${r.text.slice(0, 317)}…` : r.text}</blockquote>
-                <a href={url} target="_blank" rel="noopener" className="review-card__source">Posted on Google</a>
+                <a href={url} target="_blank" rel="noopener" className="review-card__source">{r.text.endsWith("…") ? "Read full review on Google" : "Posted on Google"}</a>
               </figure>
             ))}
           </div>

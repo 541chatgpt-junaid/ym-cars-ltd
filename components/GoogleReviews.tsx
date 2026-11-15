@@ -1,5 +1,6 @@
 import { site } from "@/data/site";
 import { GoogleIcon, StarIcon } from "./Icons";
+import ReviewsSlider from "./ReviewsSlider";
 import { googleRating, googleReviewCount, manualReviews } from "@/data/reviews";
 
 type Review = { author: string; rating: number; text: string; when: string; photo?: string };
@@ -116,29 +117,8 @@ export default async function GoogleReviews() {
         </div>
 
         {data.reviews.length > 0 && (
-          <div className="reviews__grid">
-            {data.reviews.slice(0, 12).map((r, i) => (
-              <figure key={i} className="review-card" data-reveal="up" style={{ ["--d" as string]: `${(i % 3) * 100}ms` }}>
-                <div className="review-card__head">
-                  {r.photo ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={r.photo} alt="" width={42} height={42} className="avatar" loading="lazy" referrerPolicy="no-referrer" />
-                  ) : (
-                    <span className="avatar" aria-hidden>
-                      {r.author.charAt(0)}
-                    </span>
-                  )}
-                  <div>
-                    <figcaption>{r.author}</figcaption>
-                    <span className="muted small">{r.when}</span>
-                  </div>
-                  <GoogleIcon size={18} />
-                </div>
-                <Stars n={r.rating} />
-                <blockquote>{r.text.length > 320 ? `${r.text.slice(0, 317)}…` : r.text}</blockquote>
-                <a href={url} target="_blank" rel="noopener" className="review-card__source">{r.text.endsWith("…") ? "Read full review on Google" : "Posted on Google"}</a>
-              </figure>
-            ))}
+          <div data-reveal="up">
+            <ReviewsSlider reviews={data.reviews} url={url} />
           </div>
         )}
       </div>

@@ -377,7 +377,7 @@ export default function Home() {
                 </li>
               </ul>
               <a
-                href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(site.mapQuery)}`}
+                href={site.googleMapsUrl}
                 target="_blank"
                 rel="noopener"
                 className="btn btn--blue"
@@ -388,9 +388,9 @@ export default function Home() {
             <div className="contact__map" data-reveal="right">
               <iframe
                 title={`Map showing ${site.name} location`}
-                src={`https://maps.google.com/maps?q=${encodeURIComponent(site.mapQuery)}&z=14&output=embed`}
+                src={site.mapEmbedUrl}
                 loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
+                referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
               />
             </div>

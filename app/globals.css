@@ -361,6 +361,8 @@ p { margin: 0 0 1em; }
 }
 .reviews__score { display: flex; align-items: center; gap: 0.6rem; }
 .reviews__score strong { font-size: 2rem; line-height: 1; }
+.reviews__actions { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
+.avatar { object-fit: cover; }
 .reviews__notice { text-align: center; font-size: 0.8rem; color: #8a6d00; background: #fff8db; border: 1px solid #f3e2a0; border-radius: 10px; padding: 0.55rem 1rem; max-width: 620px; margin: 0 auto 2rem; }
 .reviews__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; }
 .review-card { margin: 0; background: #fff; border-radius: var(--radius); padding: 1.5rem; border: 1px solid var(--line); transition: transform 0.35s var(--ease), box-shadow 0.35s; }

@@ -19,8 +19,13 @@ export const site = {
     postcode: "",
     country: "GB",
   },
-  // Text the Google Map searches for. Change it to the full address once it is confirmed.
-  mapQuery: "Birmingham, UK",
+  // Google Maps embed for the YM CARS LTD business listing.
+  mapEmbedUrl:
+    "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d533527.732898204!2d-3.0003773!3d52.50075!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e05fc9420425e95%3A0xf416ff2dd5a4efe8!2sYM%20CARS%20LTD!5e1!3m2!1sen!2s!4v1794710938003!5m2!1sen!2s",
+  // Direct link to the Google Business listing (CID taken from the embed above).
+  googleMapsUrl: "https://maps.google.com/?cid=17588525967065018344",
+  // Text used to find the listing in the Google Places API when GOOGLE_PLACE_ID is not set.
+  googlePlaceSearch: "YM CARS LTD",
 
   hours: [
     { days: "Monday – Friday", time: "09:00 – 18:00" },
@@ -29,7 +34,7 @@ export const site = {
   ],
 
   // Google Business Profile link ("Read all reviews" / "Write a review").
-  googleReviewsUrl: "https://www.google.com/maps/search/?api=1&query=YM+Cars+Ltd",
+  googleReviewsUrl: "https://maps.google.com/?cid=17588525967065018344",
 };
 
 export const whatsappLink = (text?: string) =>

@@ -2,64 +2,74 @@ import { site } from "@/data/site";
 import { GoogleIcon, StarIcon } from "./Icons";
 
 type Review = { author: string; rating: number; text: string; when: string; photo?: string };
-type ReviewData = { rating: number; total: number; reviews: Review[]; live: boolean };
+type ReviewData = { rating: number; total: number; reviews: Review[]; url: string };
 
-// Live Google reviews come from the Google Places API (New).
-// Set GOOGLE_PLACES_API_KEY and GOOGLE_PLACE_ID in the environment and reviews refresh every 24 hours.
-// Without those keys, clearly labelled placeholder reviews are shown so the layout can be previewed.
-async function getReviews(): Promise<ReviewData> {
+const FIELDS = "rating,userRatingCount,reviews,googleMapsUri";
+
+// Live Google reviews from the Google Places API (New), refreshed every 24 hours.
+// Only GOOGLE_PLACES_API_KEY is required. GOOGLE_PLACE_ID is optional: without it the
+// listing is found by name (site.googlePlaceSearch).
+async function getReviews(): Promise<ReviewData | null> {
   const key = process.env.GOOGLE_PLACES_API_KEY;
+  if (!key) return null;
   const placeId = process.env.GOOGLE_PLACE_ID;
-  if (key && placeId) {
-    try {
+
+  try {
+    let place: any;
+    if (placeId) {
       const res = await fetch(`https://places.googleapis.com/v1/places/${placeId}`, {
-        headers: {
-          "X-Goog-Api-Key": key,
-          "X-Goog-FieldMask": "rating,userRatingCount,reviews",
-        },
+        headers: { "X-Goog-Api-Key": key, "X-Goog-FieldMask": FIELDS },
         next: { revalidate: 86400 },
       });
-      if (res.ok) {
-        const d = await res.json();
-        return {
-          live: true,
-          rating: d.rating ?? 5,
-          total: d.userRatingCount ?? 0,
-          reviews: (d.reviews ?? []).map((r: any) => ({
-            author: r.authorAttribution?.displayName ?? "Google user",
-            photo: r.authorAttribution?.photoUri,
-            rating: r.rating ?? 5,
-            text: r.text?.text ?? r.originalText?.text ?? "",
-            when: r.relativePublishTimeDescription ?? "",
-          })),
-        };
-      }
-    } catch {
-      /* fall through to placeholders */
+      if (!res.ok) return null;
+      place = await res.json();
+    } else {
+      const res = await fetch("https://places.googleapis.com/v1/places:searchText", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Goog-Api-Key": key,
+          "X-Goog-FieldMask": FIELDS.split(",").map((f) => `places.${f}`).join(","),
+        },
+        body: JSON.stringify({ textQuery: site.googlePlaceSearch, regionCode: "GB", pageSize: 1 }),
+        next: { revalidate: 86400 },
+      });
+      if (!res.ok) return null;
+      place = (await res.json()).places?.[0];
     }
+    if (!place) return null;
+
+    return {
+      rating: place.rating ?? 0,
+      total: place.userRatingCount ?? 0,
+      url: place.googleMapsUri || site.googleReviewsUrl,
+      reviews: (place.reviews ?? [])
+        .map((r: any) => ({
+          author: r.authorAttribution?.displayName ?? "Google user",
+          photo: r.authorAttribution?.photoUri,
+          rating: r.rating ?? 5,
+          text: r.text?.text ?? r.originalText?.text ?? "",
+          when: r.relativePublishTimeDescription ?? "",
+        }))
+        .filter((r: Review) => r.text),
+    };
+  } catch {
+    return null;
   }
-  return {
-    live: false,
-    rating: 5,
-    total: 0,
-    reviews: [
-      { author: "Sample Review", rating: 5, when: "Placeholder", text: "Rented a 7-seater for a family trip. The car was spotless and the booking over WhatsApp took minutes. Will use again." },
-      { author: "Sample Review", rating: 5, when: "Placeholder", text: "Bought my first car here. No pressure, honest advice, and they took my old car in part-exchange at a fair price." },
-      { author: "Sample Review", rating: 5, when: "Placeholder", text: "Needed a car at short notice after an accident. Sorted the same day. Friendly team and great communication." },
-    ],
-  };
 }
 
-const Stars = ({ n }: { n: number }) => (
+const Stars = ({ n, size = 16 }: { n: number; size?: number }) => (
   <span className="stars" aria-label={`${n} out of 5 stars`}>
     {Array.from({ length: 5 }, (_, i) => (
-      <StarIcon key={i} size={16} className={i < Math.round(n) ? "star--on" : "star--off"} />
+      <StarIcon key={i} size={size} className={i < Math.round(n) ? "star--on" : "star--off"} />
     ))}
   </span>
 );
 
 export default async function GoogleReviews() {
   const data = await getReviews();
+  const url = data?.url || site.googleReviewsUrl;
+
   return (
     <section id="reviews" className="section section--alt" aria-labelledby="reviews-title">
       <div className="container">
@@ -71,40 +81,56 @@ export default async function GoogleReviews() {
         <div className="reviews__summary" data-reveal="up">
           <GoogleIcon size={36} />
           <div>
-            {data.live && (
-              <div className="reviews__score">
-                <strong>{data.rating.toFixed(1)}</strong> <Stars n={data.rating} />
-              </div>
-            )}
-            <span className="muted">{data.live ? `Based on ${data.total} Google reviews` : "Live Google rating appears here once connected"}</span>
-          </div>
-          <a href={site.googleReviewsUrl} target="_blank" rel="noopener" className="btn btn--ghost btn--sm">
-            Read all reviews
-          </a>
-        </div>
-
-        {!data.live && (
-          <p className="reviews__notice">Preview only: these are placeholder reviews. Real Google reviews load automatically when the Google Places API key is added.</p>
-        )}
-
-        <div className="reviews__grid">
-          {data.reviews.slice(0, 6).map((r, i) => (
-            <figure key={i} className="review-card" data-reveal="up" style={{ ["--d" as string]: `${i * 100}ms` }}>
-              <div className="review-card__head">
-                <span className="avatar" aria-hidden>
-                  {r.author.charAt(0)}
-                </span>
-                <div>
-                  <figcaption>{r.author}</figcaption>
-                  <span className="muted small">{r.when}</span>
+            {data && data.total > 0 ? (
+              <>
+                <div className="reviews__score">
+                  <strong>{data.rating.toFixed(1)}</strong> <Stars n={data.rating} />
                 </div>
-                <GoogleIcon size={18} />
-              </div>
-              <Stars n={r.rating} />
-              <blockquote>{r.text}</blockquote>
-            </figure>
-          ))}
+                <span className="muted">Based on {data.total} Google reviews</span>
+              </>
+            ) : (
+              <>
+                <strong>Rated by our customers on Google</strong>
+                <br />
+                <span className="muted">Read genuine reviews from YM Cars customers</span>
+              </>
+            )}
+          </div>
+          <div className="reviews__actions">
+            <a href={url} target="_blank" rel="noopener" className="btn btn--ghost btn--sm">
+              Read all reviews
+            </a>
+            <a href={url} target="_blank" rel="noopener" className="btn btn--blue btn--sm">
+              Write a review
+            </a>
+          </div>
         </div>
+
+        {data && data.reviews.length > 0 && (
+          <div className="reviews__grid">
+            {data.reviews.slice(0, 6).map((r, i) => (
+              <figure key={i} className="review-card" data-reveal="up" style={{ ["--d" as string]: `${(i % 3) * 100}ms` }}>
+                <div className="review-card__head">
+                  {r.photo ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={r.photo} alt="" width={42} height={42} className="avatar" loading="lazy" referrerPolicy="no-referrer" />
+                  ) : (
+                    <span className="avatar" aria-hidden>
+                      {r.author.charAt(0)}
+                    </span>
+                  )}
+                  <div>
+                    <figcaption>{r.author}</figcaption>
+                    <span className="muted small">{r.when}</span>
+                  </div>
+                  <GoogleIcon size={18} />
+                </div>
+                <Stars n={r.rating} />
+                <blockquote>{r.text.length > 320 ? `${r.text.slice(0, 317)}…` : r.text}</blockquote>
+              </figure>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
